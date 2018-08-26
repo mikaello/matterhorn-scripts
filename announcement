@@ -8,15 +8,16 @@ from math import floor
 program_name = sys.argv.pop(0)
 symbol = "#"
 
-stdin = ""
-for line in sys.stdin:
-    stdin += line
+# Take input from stdin if not provided as terminal arguments
+if not len(sys.argv):
+    stdin = []
+    for line in sys.stdin:
+        stdin.append(line)
 
-if len(stdin):
-    sys.argv = [stdin]
+    sys.argv = stdin
 
 if not len(sys.argv):
-    sys.stderr.write("Sorry, you have to provide at least one argument. If first argument is a symbol, it wil be use as the border.")
+    sys.stderr.write("Sorry, you have to provide at least one argument. If first argument is a symbol, it wil be used as the border.")
     sys.exit(1)
 
 def isLetterOrNum(some_string):
@@ -29,20 +30,20 @@ def isLetterOrNum(some_string):
     return False
 
 
-if len(sys.argv[0]) is 1 and not isLetterOrNum(sys.argv[0]):
-    symbol = sys.argv.pop(0)
+if len(sys.argv[0].strip()) is 1 and not isLetterOrNum(sys.argv[0]):
+    symbol = sys.argv.pop(0).strip()
 
 message = " ".join(sys.argv).upper()
 
 def lengthOfLongestLine(some_string):
-    longest_sentence = reduce((lambda cur, next: cur if len(cur.strip()) > len(next.strip()) else next), some_string.split("\n"))
+    longest_sentence = reduce((lambda cur, next: cur if len(cur.strip()) > len(next.strip()) else next), some_string.splitlines())
     return len(longest_sentence.strip())
 
 length_of_longest = lengthOfLongestLine(message)
 width = length_of_longest + 8
 
 top_bottom_line = symbol * width
-empty_line = symbol + " ".ljust(width-2) + symbol
+empty_line = symbol + symbol.rjust(width-1)
 
 announcement = "```"
 announcement += "\n" + top_bottom_line + "\n"
@@ -54,6 +55,7 @@ for line in message.splitlines():
     announcement += sline.rjust(floor((len(sline) + (width-1))/2)).ljust(width-2)
     announcement += symbol + "\n"
 
+announcement += empty_line + "\n"
 announcement += top_bottom_line + "\n"
 announcement += "```"
 
