@@ -1,4 +1,12 @@
+# Matterhorn scripts
+
+This is a collection of scripts written for Matterhorn.
+
+The scripts must be put in `~/.config/matterhorn/scripts/`, and all scripts must have execute permission for user (`chmod u+x <script>`). Execute the scripts inside the Matterhorn message window with this command: `/sh <script>`.
+
 ## Announce
+
+Requirements: Python 3
 
 ### Usage
 
