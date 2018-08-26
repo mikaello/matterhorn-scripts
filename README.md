@@ -1,8 +1,8 @@
 ## Announce
 
-### Usage:
+### Usage
 
-Single line:
+#### Single line:
 ```
 > /sh announce Hello
 ```
@@ -17,7 +17,7 @@ Result:
 ```
 
 
-Multiline:
+#### Multiline:
 ```
 /sh announce Hi
 Today is a new day
@@ -36,7 +36,7 @@ Result:
 
 ```
 
-Custom border:
+#### Custom border:
 ```
 /sh announce $
 cash is the king
