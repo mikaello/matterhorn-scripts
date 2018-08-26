@@ -4,7 +4,6 @@ import sys
 from functools import reduce
 from math import floor
 
-#sys.argv = ["announcement", "#", "mornings\nheiseeeeo", "\ndu", "er\n", "meg"]
 program_name = sys.argv.pop(0)
 symbol = "#"
 
@@ -45,6 +44,7 @@ width = length_of_longest + 8
 top_bottom_line = symbol * width
 empty_line = symbol + symbol.rjust(width-1)
 
+# Start building output. Triple ` mean that content will be as a code-block (markdown syntax)
 announcement = "```"
 announcement += "\n" + top_bottom_line + "\n"
 announcement += empty_line + "\n"
