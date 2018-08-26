@@ -1,0 +1,80 @@
+#!/usr/bin/env node
+
+var http = require("https");
+
+// const fs = require("fs");
+// var stdinBuffer = fs.readFileSync(0); // STDIN_FILENO = 0
+// console.log(stdinBuffer.toString());
+
+const getPosition = () => {
+  return new Promise((resolve, reject) => {
+    var options = {
+      "method": "GET",
+      "hostname": "freegeoip.app",
+      "port": null,
+      "path": "/json/",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "user-agent": "matterhorn"
+      }
+    };
+
+    var req = http.request(options, function (res) {
+      if (res.statusCode < 200 || res.statusCode > 299) {
+        reject(new Error('Failed to fetch location, status code: ' + res.statusCode));
+      }
+
+      var chunks = [];
+
+      res.on("data", function (chunk) {
+        chunks.push(chunk);
+      });
+
+      res.on("end", function () {
+        var body = Buffer.concat(chunks);
+        resolve(JSON.parse(body));
+      });
+    });
+    req.on('error', (err) => reject(err))
+    req.end();
+  })
+}
+
+
+function exitWithSuccess (message) {
+  process.stdout.write(`${message}\n`);
+  process.exit(0);
+}
+
+function exitWithError (message, code = 1) {
+  process.stderr.write(`${message}\n`);
+  process.exit(code);
+}
+
+const formatToHuman = data => {
+  if (!data.country_name && !data.region_name && !data.city) {
+    return Promise.reject(new Error('Unable to retrieve region'));
+  }
+
+  return [data.city, data.region_name, data.country_name]
+    .filter(Boolean)
+    .join(', ');
+}
+
+function getGoogleLink(latitude, longitude, zoom = 13) {
+  return `https://www.google.com/maps/@${latitude},${longitude},${zoom}z`;
+}
+
+async function run() {
+  try {
+    const positionData = await getPosition();
+    const humanPosition = await formatToHuman(positionData);
+    exitWithSuccess(humanPosition + " " + getGoogleLink(positionData.latitude, positionData.longitude));
+  } catch (error) {
+    exitWithError(error.message);
+  }
+}
+
+
+run();
